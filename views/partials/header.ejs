@@ -1,0 +1,19 @@
+<header>
+    <nav>
+        <!-- Seu menu aqui -->
+        <h1>EduStream</h1>
+    </nav>
+</header>
+
+<!-- Exibição global de mensagens de erro/sucesso -->
+<% if (error && error.length > 0) { %>
+    <div style="color: red; border: 1px solid red; padding: 10px;">
+        <%= error_msg %>
+    </div>
+<% } %>
+
+<% if (success && success.length > 0) { %>
+    <div style="color: green; border: 1px solid green; padding: 10px;">
+        <%= success %>
+    </div>
+<% } %>
