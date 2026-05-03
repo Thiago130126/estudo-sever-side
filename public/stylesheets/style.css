@@ -1,12 +1,202 @@
+/* --- Variáveis de Cores (Paleta Roxa) --- */
+:root {
+    --purple-light: #f3e8ff; /* Fundo suave */
+    --purple-mid: #a855f7;   /* Bordas e hover */
+    --purple-main: #7e22ce;  /* Cor principal (botões, header) */
+    --purple-dark: #3b0764;  /* Textos escuros */
+    --danger-light: #fee2e2;
+    --danger-dark: #991b1b;
+    --success-light: #dcfce3;
+    --success-dark: #166534;
+}
+
+/* --- Reset Básico --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background: black;
-  color: azure;
+    background-color: var(--purple-light);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ocupa a tela toda para o footer ficar no fundo */
 }
 
-a {
-  color: #00B7FF;
+/* --- Layout Principal --- */
+header {
+    background-color: var(--purple-main);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* --- Ajustes do Header --- */
+header h1, header h2 {
+    margin: 0; /* Tira o espaçamento padrão que quebra o alinhamento */
+}
 
+header nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between; /* Joga um filho pra cada lado */
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem; /* Espaço entre os links */
+    align-items: center;
+}
+
+.link-header {
+    color: var(--purple-light);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.link-header:hover {
+    color: white;
+}
+
+/* Um efeitinho especial para o botão de criar conta parecer diferente */
+.btn-outline {
+    border: 1px solid var(--purple-light);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+}
+
+.btn-outline:hover {
+    background-color: var(--purple-light);
+    color: var(--purple-main);
+}
+
+header nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+main {
+    flex-grow: 1; /* Faz o conteúdo empurrar o footer para baixo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 20px;
+}
+
+footer {
+    background-color: var(--purple-dark);
+    color: #cbd5e1;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+}
+
+/* --- O Card do Formulário (A Mágica) --- */
+.auth-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(126, 34, 206, 0.15); /* Sombra arroxeada */
+    width: 100%;
+    max-width: 450px;
+    border-top: 5px solid var(--purple-main);
+}
+
+.auth-card h2 {
+    color: var(--purple-dark);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--purple-mid);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: var(--purple-main);
+    color: white;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #6b21a8; /* Roxo mais escuro no hover */
+}
+
+/* --- Alertas do Flash (Bonitões) --- */
+.alert {
+    max-width: 1200px;
+    margin: 1rem auto 0;
+    padding: 1rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+    width: 90%;
+}
+
+.alert-danger {
+    background-color: var(--danger-light);
+    color: var(--danger-dark);
+    border: 1px solid #f87171;
+}
+
+.alert-success {
+    background-color: var(--success-light);
+    color: var(--success-dark);
+    border: 1px solid #4ade80;
+}
+
+.texto-formatado {
+    white-space: pre-wrap;
+}

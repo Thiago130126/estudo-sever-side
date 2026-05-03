@@ -50,6 +50,8 @@ app.use((req, res, next) => {
     // res.locals é o objeto de variáveis globais do EJS
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
+
+    res.locals.user = req.session.usuarioLogado || null;
     
     next(); // Avisa o Express para continuar o fluxo e ir para as rotas
 });

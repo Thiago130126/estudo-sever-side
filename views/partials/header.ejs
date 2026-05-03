@@ -1,19 +1,36 @@
 <header>
     <nav>
-        <!-- Seu menu aqui -->
-        <h1>EduStream</h1>
+        <h1><a href="/" class="logo">EduStream</a></h1>
+
+        <div class="nav-links">
+            <!-- Se a variável 'user' existir (alguém logado) -->
+            <% if (locals.user) { %>
+                
+                <span class="link-header">Olá, <%= user.username %>!</span>
+                <!-- Aqui no futuro colocaremos o botão de Logout -->
+                <h2><a href="/account/logout" class="link-header btn-outline">Sair</a></h2>
+
+            <!-- Se a variável 'user' for nula (ninguém logado) -->
+            <% } else { %>
+
+                <h2><a href="/account/login" class="link-header">Fazer Login</a></h2>
+                <h2><a href="/account/register" class="link-header btn-outline">Criar Conta</a></h2>
+
+            <% } %>
+        </div>
+
     </nav>
 </header>
 
-<!-- Exibição global de mensagens de erro/sucesso -->
+
 <% if (error && error.length > 0) { %>
-    <div style="color: red; border: 1px solid red; padding: 10px;">
-        <%= error_msg %>
+    <div class="alert alert-danger">
+        <%= error %>
     </div>
 <% } %>
 
 <% if (success && success.length > 0) { %>
-    <div style="color: green; border: 1px solid green; padding: 10px;">
+    <div class="alert alert-success">
         <%= success %>
     </div>
 <% } %>

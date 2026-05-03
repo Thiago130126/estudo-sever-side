@@ -1,5 +1,6 @@
 const Users = require("./userModel");
 const bcrypt = require("bcryptjs");
+const { Op } = require('sequelize');
 
 exports.createUser = async (req, res) => {
     try{
@@ -69,4 +70,61 @@ exports.createUser = async (req, res) => {
         req.flash('error', 'Erro ao cadastrar');
         return res.redirect('/register');
     }
+}
+
+exports.loginUser = async (req, res) => {
+
+    try{
+        const { email_username, senha } = req.body;
+    
+        if(!email_username || !senha){
+            req.flash('error', 'Credenciais inválidas');
+            return res.redirect('/account/login');
+        }
+
+        const usuario = await Users.findOne({
+            where: {
+                [Op.or]: [
+                    {email: email_username},
+                    {username: email_username}
+                ]
+            }
+        });
+
+        if(!usuario){
+            req.flash('error', 'Credenciais inválidas');
+            return res.redirect('/account/login');
+        }
+
+        const senhaBate = await bcrypt.compare(senha, usuario.senha);
+
+        if(!senhaBate){
+            req.flash('error', 'Credenciais inválidas');
+            return res.redirect('/account/login');
+        }
+
+        if(!usuario.ativo){
+            req.flash('error', 'Conta desativada');
+            return res.redirect('/account/login');
+        }
+
+        req.session.usuarioLogado = {
+            id: usuario.id,
+            username: usuario.username,
+            adm: usuario.adm,
+        }
+
+        req.flash('success', `Bem vindo de volta, ${usuario.first_name}`);
+        return res.redirect('/');
+
+    }catch(erro){
+        console.error(erro);
+        req.flash('error', 'Erro ao fazer login');
+        res.redirect('/account/login');
+    }
+};
+
+exports.logoutUser = (req, res) => {
+    req.session.usuarioLogado = null;
+    res.redirect('/');
 }
