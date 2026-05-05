@@ -8,31 +8,31 @@ exports.createUser = async (req, res) => {
 
         if (!email || !senha || !senha2 || !username) {
             req.flash('error', 'Preencha todos os campos obrigatórios!');
-            return res.redirect('/register'); 
+            return res.redirect('/account/register'); 
         }
 
         if(!(senha == senha2)){
             req.flash('error', 'Senhas não coincidem');
-            return res.redirect('/register');
+            return res.redirect('/account/register');
         }
 
         if(senha.length < 6 || senha2.length < 6){
             req.flash('error', 'Senha com menos de 6 caracteres');
-            return res.redirect('/register');
+            return res.redirect('/account/register');
         }
 
         const emailQuery = await Users.findOne({where: { email: email }});
 
         if(emailQuery){
             req.flash('error', 'Email já cadastrado');
-            return res.redirect('/register');
+            return res.redirect('/account/register');
         }
 
         const usernameQuery = await Users.findOne({where: { username: username }});
 
         if(usernameQuery){
             req.flash('error', 'Nome de usuário já cadastrado');
-            return res.redirect('/register');
+            return res.redirect('/account/register');
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -41,8 +41,10 @@ exports.createUser = async (req, res) => {
 
         const qtdeUsers = await Users.count();
 
+        let novoUsuario;
+
         if(qtdeUsers == 0){
-            await Users.create({
+            novoUsuario = await Users.create({
                 username: username,
                 first_name: first_name,
                 last_name: last_name,
@@ -51,7 +53,7 @@ exports.createUser = async (req, res) => {
                 adm: true
             });
         }else{
-            await Users.create({
+            novoUsuario = await Users.create({
                 username: username,
                 first_name: first_name,
                 last_name: last_name,
@@ -60,21 +62,28 @@ exports.createUser = async (req, res) => {
             });
         }
 
+        req.session.usuarioLogado = {
+            id: novoUsuario.id,
+            username: novoUsuario.username,
+            adm: novoUsuario.adm,
+        }
+
         req.flash('success', 'Usuário criado com sucesso');
         console.log('Usuário criado com sucesso');
-        return res.redirect('/register');
+        return res.redirect('/');
 
 
     } catch(erro){
         console.error(erro);
         req.flash('error', 'Erro ao cadastrar');
-        return res.redirect('/register');
+        return res.redirect('/account/register');
     }
 }
 
 exports.loginUser = async (req, res) => {
 
     try{
+
         const { email_username, senha } = req.body;
     
         if(!email_username || !senha){

@@ -1,0 +1,99 @@
+<main class="container">
+    <div class="form-container" style="max-width: 600px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <h2 style="color: var(--purple-main); margin-bottom: 1.5rem; text-align: center;">Adicionar Novo Livro</h2>
+
+        <!-- ATENÇÃO: O enctype é obrigatório para enviar arquivos! -->
+        <form action="<%= typeof livro !== 'undefined' ? `/books/edit/${livro.id}` : '/books/add' %>" method="POST" enctype="multipart/form-data">
+            
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <label for="titulo" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Título do Livro:</label>
+                <input type="text" id="titulo" name="titulo" required style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px;"
+                value="<%= typeof livro !== 'undefined' ? livro.titulo : ''%>">
+            </div>
+
+            <div class="input-group" style="margin-bottom: 1.5rem;">
+                <label for="paginas" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Número de Páginas:</label>
+                <input type="number" id="paginas" name="paginas" min="1" required style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px;"
+                value="<%= typeof livro !== 'undefined' ? livro.paginas : ''%>">
+            </div>
+
+            <!-- SELEÇÃO DO TIPO DE IMAGEM -->
+            <div style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #eee; border-radius: 4px; background-color: #f9f9f9;">
+                <p style="margin-bottom: 0.5rem; font-weight: bold;">Capa do Livro:</p>
+                
+                <!-- MÁGICA 1: Mostrar a capa atual se estiver no modo Edição -->
+                <% if (typeof livro !== 'undefined' && livro.imagem) { %>
+                    <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ddd;">
+                        <p style="font-size: 0.85rem; color: #666; margin-bottom: 5px;">Capa Atual salva no banco:</p>
+                        <img src="<%= livro.imagem %>" alt="Capa atual" style="height: 100px; border-radius: 4px; object-fit: contain; border: 1px solid #ccc;">
+                        <p style="font-size: 0.8rem; color: #d9534f; margin-top: 5px;">
+                            * Para manter esta capa, deixe as opções abaixo vazias.
+                        </p>
+                    </div>
+                <% } %>
+
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <label>
+                        <input type="radio" name="tipo_imagem" value="url" checked onchange="toggleImagemInput()"> 
+                        Usar Link da Internet
+                    </label>
+                    <label>
+                        <input type="radio" name="tipo_imagem" value="upload" onchange="toggleImagemInput()"> 
+                        Fazer Upload do PC
+                    </label>
+                </div>
+
+                <!-- CAMPO 1: URL -->
+                <div id="div_url">
+                    <!-- MÁGICA 2: Preenche o link APENAS se a imagem salva for de fato um link (começar com http) -->
+                    <input type="url" id="imagem_url" name="imagem_url" 
+                        value="<%= typeof livro !== 'undefined' && livro.imagem && livro.imagem.startsWith('http') ? livro.imagem : '' %>"
+                        placeholder="https://exemplo.com/capa.jpg" style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <small style="color: #666; font-size: 0.8rem;">Cole o link direto para a imagem.</small>
+                </div>
+
+                <!-- CAMPO 2: UPLOAD (O value DEVE ficar vazio por segurança do navegador) -->
+                <div id="div_upload" style="display: none;">
+                    <input type="file" id="imagem_upload" name="imagem_upload" accept="image/*" style="width: 100%; padding: 0.8rem; border: 1px dashed var(--purple-main); border-radius: 4px; background: #fff;">
+                    <small style="color: #666; font-size: 0.8rem;">Formatos aceitos: JPG, PNG, WEBP.</small>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Salvar Livro</button>
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="/" style="color: #666; text-decoration: none;">Cancelar e voltar</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<!-- JAVASCRIPT DE TELA PARA ALTERNAR OS CAMPOS -->
+<script>
+    function toggleImagemInput() {
+        // Pega qual rádio está selecionado
+        const tipoSelecionado = document.querySelector('input[name="tipo_imagem"]:checked').value;
+        
+        // Pega as divs que contém os inputs
+        const divUrl = document.getElementById('div_url');
+        const divUpload = document.getElementById('div_upload');
+        
+        // Pega os inputs em si para controlar a obrigatoriedade (required)
+        const inputUrl = document.getElementById('imagem_url');
+        const inputUpload = document.getElementById('imagem_upload');
+
+        if (tipoSelecionado === 'url') {
+            // Mostra URL, esconde Upload
+            divUrl.style.display = 'block';
+            divUpload.style.display = 'none';
+            // Limpa o arquivo caso o usuário tenha selecionado e depois mudado de ideia
+            inputUpload.value = ''; 
+        } else {
+            // Mostra Upload, esconde URL
+            divUpload.style.display = 'block';
+            divUrl.style.display = 'none';
+            // Limpa a URL caso o usuário tenha digitado e depois mudado de ideia
+            inputUrl.value = ''; 
+        }
+    }
+</script>

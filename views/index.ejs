@@ -1,15 +1,68 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
+<% if (locals.user) { %>
+  <div class="dashboard">
+    <h2>Você tem <%= livros.length %> livros </h2>
+      <% if (livros.length === 0) { %>
+      <p>Você ainda não possui livros. <a href="/books/add">Adicionar livros</a></p>
+      <% } else { %>
+      
+        <!-- A Div "Mãe" que vai organizar a grade -->
+        <div class="livros-grid">
+            <% livros.forEach(livro => { %>
+                
+                <!-- A Div "Filha" (o Cartãozinho de cada livro) -->
+                <div class="livro-card">
+                    <!-- A imagem subiu! Fica antes do título -->
+                    <img src="<%= livro.imagem %>" alt="Capa do livro <%= livro.titulo %>">
+                    <h3><%= livro.titulo %></h3>
+                    <p>Páginas: <%= livro.paginas %></p>
+                    <div class="menu-opcoes">
+                        <button class="btn-pontinhos" onclick="toggleMenu(this)">&#8942;</button>
+
+                        <div class="dropdown-menu">
+                            <a href="/books/edit/<%= livro.id %>">Editar</a>
+                            <form action="/books/delete/<%= livro.id %>" method="post" onsubmit="return confirm('Tem certeza que deseja deletar este livro? Esta ação não pode ser desfeita.');">
+                                <button class="btn-deletar" type="submit">Deletar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+            <% }) %>
+        </div>
+        
+    <% } %>
+    </div>
+<%} else { %>
+
     <div>
       <h2 class="texto-formatado">Bem vindo ao <%= title %></h2>
-      <p>Um site que era pra ser uma platoforma de e-learning <br></p>
+      <p>Um site que era pra ser uma platoforma de e-learning</p>
       <p>E virou uma biblioteca</p>
     </div>
-    
-  </body>
-</html>
+
+<% } %>
+
+<script>
+    // Função que abre/fecha o menu do livro específico
+    function toggleMenu(botao) {
+        // Encontra a div 'dropdown-menu' que está logo depois do botão clicado
+        const menu = botao.nextElementSibling;
+        
+        // Adiciona ou remove a classe 'mostrar'
+        menu.classList.toggle('mostrar');
+    }
+
+    // BÔNUS DE UX: Fechar o menu se o usuário clicar em qualquer outro lugar da tela
+    document.addEventListener('click', function(event) {
+        // Verifica se o clique NÃO foi em um menu ou botão de pontinhos
+        if (!event.target.closest('.menu-opcoes')) {
+            // Pega todos os menus abertos e fecha
+            document.querySelectorAll('.dropdown-menu.mostrar').forEach(menu => {
+                menu.classList.remove('mostrar');
+            });
+        }
+    });
+</script>
+
+
+

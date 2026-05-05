@@ -4,7 +4,11 @@ const { Model, DataTypes } = require('sequelize');
 class Books extends Model {}
 
 Books.init({
-    nome: {
+    titulo: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    imagem: {
         type: DataTypes.STRING,
         allowNull: false
     },

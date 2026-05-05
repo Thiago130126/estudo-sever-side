@@ -1,14 +1,31 @@
 <header>
     <nav>
-        <h1><a href="/" class="logo">EduStream</a></h1>
+        <div class="nav-left" style="display: flex; align-items: center; gap: 1rem;">
+            <% if (locals.currentPath && locals.currentPath.startsWith('/admin')) { %> 
+                <a href="/" class="link-header btn-outline link-dark">← Site Normal</a>
+                <h1><a href="/admin" class="logo text-dark">EduStream</a></h1>
+            <%} else { %> 
+                <h1><a href="/" class="logo">EduStream</a></h1>
+            <%}%>
+        </div>
 
         <div class="nav-links">
             <!-- Se a variável 'user' existir (alguém logado) -->
             <% if (locals.user) { %>
+
+                <% if (!locals.currentPath.startsWith('/account') && !locals.currentPath.startsWith('/admin')) { %> 
+                    <span><a href="/books/add" class="link-header <%= (locals.currentPath && currentPath.startsWith('/admin')) ? 'text-dark' : '' %>">
+                        Novo Livro
+                    </a></span>
+                <% } %>
                 
-                <span class="link-header">Olá, <%= user.username %>!</span>
+                <span><a href="/account/profile" class="link-header <%= (locals.currentPath && currentPath.startsWith('/admin')) ? 'text-dark' : '' %>">
+                    Olá, <%= user.username %>!
+                </a></span>
                 <!-- Aqui no futuro colocaremos o botão de Logout -->
-                <h2><a href="/account/logout" class="link-header btn-outline">Sair</a></h2>
+                <h2><a href="/account/logout" class="link-header btn-outline <%= (locals.currentPath && currentPath.startsWith('/admin')) ? 'link-dark border-dark' : '' %>">
+                    Sair
+                </a></h2>
 
             <!-- Se a variável 'user' for nula (ninguém logado) -->
             <% } else { %>
