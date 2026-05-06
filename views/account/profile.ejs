@@ -1,4 +1,97 @@
-<div>
-    <h1>Página de perfil</h1>
-    <p>Um trabalho em progresso</p>
+<div class="profile-page-container">
+    
+    <div class="profile-avatar-container">
+        <button class="profile-avatar-btn" id="profileAvatarBtn">
+            <%= locals.user ? user.username.charAt(0).toUpperCase() : 'U' %>
+        </button>
+        
+        <div class="profile-dropdown-menu" id="profileDropdownMenu">
+            <button class="menu-item-danger" id="deleteAccountMenuBtn">Deletar Conta</button>
+        </div>
+    </div>
+
+    <main class="profile-main-content">
+        <h1>Seu Perfil</h1>
+        <p>Visualize e atualize suas informações básicas abaixo.</p>
+
+        <form action="/account/edit" method="POST" class="profile-edit-form">
+            
+            <div class="form-group">
+                <label for="username">Nome de Usuário</label>
+                <input type="text" id="username" name="username" value="<%= locals.user ? user.username : '' %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" value="<%= locals.user ? user.email : '' %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Nova Senha (deixe em branco se não quiser mudar)</label>
+                <input type="password" id="password" name="password">
+            </div>
+
+            <button type="submit" class="btn-save-profile">Salvar Alterações</button>
+        </form>
+
+        <div class="delete-account-confirmation" id="deleteAccountConfirmation">
+            <h2>🗑️ Confirmar Exclusão de Conta</h2>
+            <p>ATENÇÃO: Esta ação é irreversível e todos os seus dados serão apagados definitivamente. Para continuar, insira sua senha atual e digite a palavra "CONFIRMAR" em maiúsculo.</p>
+            
+            <form action="/account/delete" method="POST">
+                
+                <div class="form-group">
+                    <label for="current_password_confirm">Sua Senha Atual</label>
+                    <input type="password" id="current_password_confirm" name="current_password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_word">Digite "CONFIRMAR" (em maiúsculo)</label>
+                    <input type="text" id="confirm_word" name="confirm_word" required pattern="CONFIRMAR">
+                </div>
+
+                <div class="delete-actions">
+                    <button type="submit" class="btn-final-delete">Excluir Minha Conta Permanentemente</button>
+                    <button type="button" class="btn-cancel-delete" id="cancelDeleteBtn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
 </div>
+
+<script>
+    // JavaScript para controlar o Dropdown e a Confirmação de Deleção
+    document.addEventListener('DOMContentLoaded', function() {
+        const avatarBtn = document.getElementById('profileAvatarBtn');
+        const dropdownMenu = document.getElementById('profileDropdownMenu');
+        const deleteMenuBtn = document.getElementById('deleteAccountMenuBtn');
+        const deleteConfirmation = document.getElementById('deleteAccountConfirmation');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+
+        // Lógica do Dropdown do Avatar
+        avatarBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Impede que o clique feche o menu imediatamente
+            dropdownMenu.classList.toggle('open');
+        });
+
+        // Fecha o dropdown se o usuário clicar fora dele
+        document.addEventListener('click', function() {
+            if (dropdownMenu.classList.contains('open')) {
+                dropdownMenu.classList.remove('open');
+            }
+        });
+
+        // Lógica para abrir a confirmação de deleção
+        deleteMenuBtn.addEventListener('click', function() {
+            dropdownMenu.classList.remove('open'); // Fecha o dropdown
+            deleteConfirmation.classList.add('visible'); // Mostra a confirmação com animação
+            deleteConfirmation.scrollIntoView({ behavior: 'smooth' }); // Rola a tela para a confirmação
+        });
+
+        // Lógica para cancelar a deleção
+        cancelDeleteBtn.addEventListener('click', function() {
+            deleteConfirmation.classList.remove('visible'); // Esconde a confirmação
+        });
+    });
+</script>

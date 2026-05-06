@@ -22,6 +22,8 @@ router.get('/edit/:id', authMid.userAuth, bookControl.editBook);
 router.post('/edit/:id', authMid.userAuth, upload.single('imagem_upload'), bookControl.updateBook);
 
 
+
+
 module.exports = router;
 
 

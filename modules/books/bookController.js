@@ -254,6 +254,10 @@ exports.updateBook = async(req, res) => {
 
 exports.coletorLixoImagens = async (req, res) => {
     try{
+        const pastaUploads = path.join(__dirname, '..', '..', 'public', 'uploads', 'books');
+
+        const arquivosFisicos = await fs.readdir(pastaUploads);
+
         const capas = await Books.findAll({
             attributes: ['imagem']
         });
@@ -262,13 +266,31 @@ exports.coletorLixoImagens = async (req, res) => {
 
         const arquivos = capasFiltradas.map(capa => capa.imagem.split('/').pop());
 
-        const pastaPoluida = new Set(arquivos);
+        const imagensValidasBanco = new Set(arquivos);
 
-        
+        let apagados = 0;
 
+        for (const arquivo of arquivosFisicos) {
+            if (arquivo == '.gitkeep' || arquivo == '.DS_Store' || arquivo == 'Thumbs.db'){
+                continue;
+            }
+
+            if (!imagensValidasBanco.has(arquivo)) {
+                const caminhoParaApagar = path.join(pastaUploads, arquivo);
+
+                await fs.unlink(caminhoParaApagar);
+
+                apagados++;
+                console.log(`[Coletor de lixo] Arquivo removido: ${arquivo}`);
+            }
+        }
+
+        req.flash('success', `Limpeza concluída! ${apagados} imagens órfãs foram removidas.`);
+        return res.redirect('/admin');
 
     }catch(erro){
-        console.error(erro);
-        return res.redirect('/');
+        console.error('Erro ao limpar arquivos: ', erro);
+        req.flash('error', 'Erro ao tentar realizar a limpeza de arquivos.');
+        return res.redirect('/admin');
     }
 };

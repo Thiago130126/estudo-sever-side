@@ -1,6 +1,24 @@
-
 <div>
-    <h2>Bem vindo ao <%= title%></h2>
+    <h2>Bem-vindo ao <%= title %></h2>
+    <p>Painel de controle do sistema EduStream.</p>
 
-    <p>Logo terá mais coisas aqui.</p>
+    <hr>
+
+    <!-- Sessão de Manutenção -->
+    <div class="card-manutencao" style="margin-top: 30px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; max-width: 500px;">
+        <h3>🛠️ Manutenção do Sistema</h3>
+        <p style="color: #555; font-size: 0.9em;">
+            Verifica a pasta de uploads e remove permanentemente imagens físicas que não estão mais vinculadas a nenhum livro no banco de dados.
+        </p>
+
+        <!-- O formulário com a trava de segurança JS -->
+        <form action="/admin/limpar-lixo" method="post" onsubmit="return confirm('ATENÇÃO: O servidor será varrido e as imagens órfãs serão apagadas definitivamente. Deseja continuar?');">
+            
+            <!-- Botão com um visual de "Atenção" (estilo Bootstrap Warning) -->
+            <button type="submit" style="background-color: #ffc107; color: #000; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;">
+                🧹 Executar Limpeza de Disco
+            </button>
+            
+        </form>
+    </div>
 </div>
