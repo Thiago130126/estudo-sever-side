@@ -1,24 +1,139 @@
-<div>
-    <h2>Bem-vindo ao <%= title %></h2>
-    <p>Painel de controle do sistema EduStream.</p>
+<link rel="stylesheet" href="/stylesheets/admin.css">
 
-    <hr>
+<div class="admin-dashboard">
 
-    <!-- Sessão de Manutenção -->
-    <div class="card-manutencao" style="margin-top: 30px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; max-width: 500px;">
-        <h3>🛠️ Manutenção do Sistema</h3>
-        <p style="color: #555; font-size: 0.9em;">
-            Verifica a pasta de uploads e remove permanentemente imagens físicas que não estão mais vinculadas a nenhum livro no banco de dados.
-        </p>
+    <!-- HEADER -->
+    <header class="admin-header">
+        <div class="admin-title">
+            <span class="eyebrow">Painel Administrativo</span>
+            <h2>Bem-vindo, <span class="gradient-text"><%= typeof user !== 'undefined' ? user.username : 'Admin' %></span></h2>
+            <p>Visão global e manutenção do sistema <strong>EduStream</strong>.</p>
+        </div>
 
-        <!-- O formulário com a trava de segurança JS -->
-        <form action="/admin/limpar-lixo" method="post" onsubmit="return confirm('ATENÇÃO: O servidor será varrido e as imagens órfãs serão apagadas definitivamente. Deseja continuar?');">
-            
-            <!-- Botão com um visual de "Atenção" (estilo Bootstrap Warning) -->
-            <button type="submit" style="background-color: #ffc107; color: #000; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;">
-                🧹 Executar Limpeza de Disco
-            </button>
-            
+        <div class="admin-actions">
+            <a href="/admin/livros" class="btn-admin-action btn-info">
+                <span class="btn-icon">📚</span>
+                <span>Gerenciar Livros</span>
+            </a>
+            <form action="/admin/limpar-lixo" method="POST" class="inline-form">
+                <button type="submit" class="btn-admin-action btn-warning">
+                    <span class="btn-icon">🧹</span>
+                    <span>Limpar Disco</span>
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <!-- STATS -->
+    <section class="admin-stats">
+        <div class="stat-card">
+            <span class="stat-label">Usuários</span>
+            <span class="stat-value"><%= typeof stats !== 'undefined' ? stats.totalUsers : 0 %></span>
+            <span class="stat-trend">total cadastrados</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Administradores</span>
+            <span class="stat-value"><%= typeof stats !== 'undefined' ? stats.totalAdmins : 0 %></span>
+            <span class="stat-trend">acesso elevado</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Banidos</span>
+            <span class="stat-value"><%= typeof stats !== 'undefined' ? stats.totalBanned : 0 %></span>
+            <span class="stat-trend">contas inativas</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Livros</span>
+            <span class="stat-value"><%= typeof stats !== 'undefined' ? stats.totalBooks : 0 %></span>
+            <span class="stat-trend">no acervo</span>
+        </div>
+    </section>
+
+    <!-- FILTROS -->
+    <section class="admin-filters-bar">
+        <form action="/admin" method="GET" class="filters-form">
+            <div class="filter-group">
+                <label for="filter">Filtrar por</label>
+                <select name="filter" id="filter">
+                    <option value="all"   <%= (typeof query!=='undefined'&&query.filter==='all')?'selected':'' %>>Todos os Usuários</option>
+                    <option value="adm"   <%= (typeof query!=='undefined'&&query.filter==='adm')?'selected':'' %>>Apenas Administradores</option>
+                    <option value="banned"<%= (typeof query!=='undefined'&&query.filter==='banned')?'selected':'' %>>Apenas Banidos</option>
+                    <option value="date"  <%= (typeof query!=='undefined'&&query.filter==='date')?'selected':'' %>>Mais Antigos</option>
+                    <option value="books" <%= (typeof query!=='undefined'&&query.filter==='books')?'selected':'' %>>Mais Livros Postados</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sort">Ordenar</label>
+                <select name="sort" id="sort">
+                    <option value="desc" <%= (typeof query!=='undefined'&&query.sort==='desc')?'selected':'' %>>Decrescente</option>
+                    <option value="asc"  <%= (typeof query!=='undefined'&&query.sort==='asc')?'selected':'' %>>Crescente</option>
+                    <option value="az"   <%= (typeof query!=='undefined'&&query.sort==='az')?'selected':'' %>>Alfabética A-Z</option>
+                    <option value="za"   <%= (typeof query!=='undefined'&&query.sort==='za')?'selected':'' %>>Alfabética Z-A</option>
+                </select>
+            </div>
+
+            <div class="filter-group filter-search">
+                <label for="q">Buscar usuário</label>
+                <input type="text" name="q" id="q" placeholder="nome ou e-mail..." value="<%= typeof query!=='undefined' ? (query.q||'') : '' %>">
+            </div>
+
+            <div class="filter-group filter-group-btn">
+                <button type="submit" class="btn-apply">Aplicar</button>
+            </div>
         </form>
-    </div>
+    </section>
+
+    <!-- TABELA -->
+    <section class="admin-table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>E-mail</th>
+                    <th>Livros</th>
+                    <th>Nível</th>
+                    <th>Status</th>
+                    <th>Cadastro</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (typeof users !== 'undefined' && users.length > 0) { %>
+                    <% users.forEach(function(u){ %>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="avatar"><%= (u.username||'?').charAt(0).toUpperCase() %></span>
+                                    <span class="user-name"><%= u.username %></span>
+                                </div>
+                            </td>
+                            <td class="muted"><%= u.email %></td>
+                            <td><strong><%= u.booksCount || 0 %></strong></td>
+                            <td>
+                                <% if (u.isAdmin) { %>
+                                    <span class="badge badge-adm">Administrador</span>
+                                <% } else { %>
+                                    <span class="badge badge-user">Usuário</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (u.ativo) { %>
+                                    <span class="badge badge-active">● Ativo</span>
+                                <% } else { %>
+                                    <span class="badge badge-banned">● Banido</span>
+                                <% } %>
+                            </td>
+                            <td class="muted"><%= u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '—' %></td>
+                            <td>
+                                <a href="/admin/usuario/<%= u._id %>" class="link-edit">Editar</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="7" class="empty-row">Nenhum usuário encontrado.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </section>
+
 </div>

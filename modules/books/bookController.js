@@ -220,7 +220,7 @@ exports.updateBook = async(req, res) => {
             if(!imagem_livro.startsWith('http')){
                 const caminhoArquivo = path.join(__dirname, '..', 'public', imagem_livro);
                 try{
-                    fs.unlink(caminhoArquivo);
+                    await fs.unlink(caminhoArquivo);
                     console.log('Imagens apagadas com sucesso');
                 }catch(erro){
                      // ENOENT significa "Error No Entry" (Arquivo ou diretório não encontrado)
