@@ -21,9 +21,12 @@ router.post('/login', userController.loginUser);
 
 router.get('/logout', userController.logoutUser);
 
-router.get('/profile', authMidd.userAuth, function(req, res, next) {
-    res.render('account/profile');
-});
+router.get('/profile', authMidd.userAuth, userController.getProfile);
+
+router.post('/edit', authMidd.userAuth, userController.updateProfile);
+
+router.post('/delete/:id', authMidd.userAuth, userController.deleteAccount);
 
 module.exports = router;
+
 

@@ -1,6 +1,7 @@
 const Users = require("./userModel");
 const bcrypt = require("bcryptjs");
 const { Op } = require('sequelize');
+const bookControl = require('../books/bookController');
 
 exports.createUser = async (req, res) => {
     try{
@@ -68,7 +69,7 @@ exports.createUser = async (req, res) => {
             adm: novoUsuario.adm,
         }
 
-        req.flash('success', 'Usuário criado com sucesso');
+        req.flash('success', `Bem vinda ${novoUsuario.first_name}`);
         console.log('Usuário criado com sucesso');
         return res.redirect('/');
 
@@ -136,4 +137,136 @@ exports.loginUser = async (req, res) => {
 exports.logoutUser = (req, res) => {
     req.session.usuarioLogado = null;
     res.redirect('/');
+}
+
+exports.getProfile = async (req, res) => {
+    try{
+
+        const usuario = await Users.findOne({
+            where: {
+                username: req.session.usuarioLogado.username
+            }
+        });
+
+        if(!usuario){
+            req.flash('erro', 'Falha ao buscar perfil');
+            return res.redirect('/');
+        }
+
+        return res.render('account/profile', {usuario: usuario});
+
+    }catch(erro){
+        console.error(erro);
+        req.flash('error', 'Falha ao carregar perfil');
+        return res.redirect('/');
+    }
+}
+
+exports.updateProfile = async (req, res) => {
+    try{
+
+        let { first_name, last_name, username, email, senha_nova } = req.body;
+
+        const usuarioAntes = await Users.findOne({
+            where: {
+                id: req.session.usuarioLogado.id
+            }
+        });
+
+        const dadosParaAtualizar = {};
+
+        if (first_name) dadosParaAtualizar.first_name = first_name;
+        if (last_name) dadosParaAtualizar.last_name = last_name;
+        
+        if(username && username !== usuarioAntes.username){
+            const usernameEmUso = await Users.findOne({where: {username: username}});
+            if(usernameEmUso){
+                req.flash('error', 'Esse nome de usuário já está em uso por outra pessoa.');
+                return res.redirect('/account/profile');
+            }
+            dadosParaAtualizar.username = username;
+        }
+
+        if(email && email !== usuarioAntes.email){
+            const emailEmUso = await Users.findOne({where: {email: email}});
+            if(emailEmUso){
+                req.flash('error', 'Esse endereço de e-mail já está cadastrado no sistema.');
+                return res.redirect('/account/profile');
+            }
+            dadosParaAtualizar.email = email;
+        }
+
+        if(senha_nova){
+            if(senha_nova.length < 6){
+                req.flash('error', 'A nova senha deve ter pelo menos 6 caracteres.');
+                return res.redirect('/account/profile');
+            }
+
+            if(await bcrypt.compare(senha_nova, usuarioAntes.senha)){
+                req.flash('error', 'A nova senha precisa ser diferente da anterior.');
+                return res.redirect('/account/profile');
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            dadosParaAtualizar.senha = await bcrypt.hash(senha_nova, salt);
+        }
+
+        await Users.update(dadosParaAtualizar, {
+            where: {id: usuarioAntes.id}
+        });
+
+        if(dadosParaAtualizar.username) req.session.usuarioLogado.username = dadosParaAtualizar.username;
+
+        req.flash('success', 'Usuario atualizado com sucesso');
+        return res.redirect('/account/profile');
+
+    }catch(erro){
+        console.error(erro);
+        req.flash('error', 'Falha ao atualizar conta');
+        return res.redirect('/');
+    }
+}
+
+exports.deleteAccount = async (req, res) => {
+    try{
+        const user = req.params.id;
+
+        const { senha, confirmacao } = req.body;
+
+
+        if(Number(user) !== req.session.usuarioLogado.id){
+            req.flash('error', 'Falha ao deletar conta');
+            return res.redirect('/account/profile');
+        }
+
+        if(confirmacao !== "EXCLUIR"){
+            req.flash('error', 'Precisa digitar EXCLUIR para confirmar');
+            return res.redirect('/account/profile');
+        }
+
+        const usuario = await Users.findOne({where: {id: user}});
+
+        if(!(await bcrypt.compare(senha, usuario.senha))){
+            req.flash('error', 'Senha incorreta. A exclusão foi cancelada por segurança.');
+            return res.redirect('/account/profile');
+        }
+
+        await Users.destroy({
+            where: {
+                id: user
+            }
+        });
+
+        delete req.session.usuarioLogado;
+
+        await bookControl.faxinaDisco().catch(console.error);
+
+        req.flash('success', `Sua conta foi excluída permanentemente. Sentiremos sua falta!`);
+        return res.redirect('/');
+
+    }catch(erro){
+        console.error(erro);
+        req.flash('error', 'Falha ao deletar conta');
+        return res.redirect('/');
+    }
 }

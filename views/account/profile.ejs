@@ -1,97 +1,99 @@
-<div class="profile-page-container">
+<!-- views/account/profile.ejs -->
+<!-- Presumo que seu base.ejs já carrega o CSS, mas certifique-se de ter o <link rel="stylesheet" href="/css/profile.css"> no seu base.ejs ou aqui no topo -->
+
+<div class="profile-dashboard">
     
-    <div class="profile-avatar-container">
-        <button class="profile-avatar-btn" id="profileAvatarBtn">
-            <%= locals.user ? user.username.charAt(0).toUpperCase() : 'U' %>
-        </button>
-        
-        <div class="profile-dropdown-menu" id="profileDropdownMenu">
-            <button class="menu-item-danger" id="deleteAccountMenuBtn">Deletar Conta</button>
-        </div>
+    <!-- Ações do Topo (Botão Excluir isolado à direita) -->
+    <!-- Ações do Topo -->
+    <div class="profile-top-actions" id="areaBotaoExcluir">
+        <button type="button" class="btn-delete-top" id="btnAbrirExclusao">Excluir Conta</button>
     </div>
 
-    <main class="profile-main-content">
-        <h1>Seu Perfil</h1>
-        <p>Visualize e atualize suas informações básicas abaixo.</p>
+    <!-- Formulário de Exclusão (Escondido por padrão) -->
+    <div class="delete-section" id="areaFormExclusao" style="display: none;">
+        <h3 style="color: #dc3545; margin-top: 0;">⚠️ Confirmação de Exclusão</h3>
+        <p style="font-size: 14px; color: #555;">Para excluir sua conta e apagar todos os seus livros, digite sua senha atual e a palavra <strong>EXCLUIR</strong>.</p>
+        
+        <!-- O action continua o mesmo, enviando o ID pela URL como você fez -->
+        <form action="/account/delete/<%= usuario.id %>" method="POST" class="delete-form-grid">
+            
+            <div class="form-group">
+                <label for="delete_password">Sua Senha</label>
+                <input type="password" id="delete_password" name="senha" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_word">Digite EXCLUIR</label>
+                <!-- O HTML5 já ajuda bloqueando se não for a palavra exata -->
+                <input type="text" id="confirm_word" name="confirmacao" required pattern="EXCLUIR" title="Você deve digitar EXCLUIR em letras maiúsculas.">
+            </div>
 
-        <form action="/account/edit" method="POST" class="profile-edit-form">
+            <div style="display: flex; gap: 15px; margin-top: 15px;">
+                <button type="submit" class="btn-delete-top">Confirmar Exclusão</button>
+                <button type="button" class="btn-cancel" id="btnCancelarExclusao">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Retângulo Roxo Arredondado (Banner) -->
+    <div class="profile-banner">
+        <h1>Configurações da Conta</h1>
+        <p>Gerencie seus dados pessoais e preferências do EduStream.</p>
+    </div>
+
+    <!-- Área do Formulário -->
+    <div class="profile-content">
+        <h2>Informações do Perfil</h2>
+        
+        <form action="/account/edit" method="POST" class="profile-form">
+            
+            <!-- Linha com duas colunas para Nome e Sobrenome -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name">Nome</label>
+                    <input type="text" id="first_name" name="first_name" value="<%= usuario.first_name ? usuario.first_name : '' %>" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="last_name">Sobrenome</label>
+                    <input type="text" id="last_name" name="last_name" value="<%= usuario.last_name ? usuario.last_name : '' %>" required>
+                </div>
+            </div>
             
             <div class="form-group">
                 <label for="username">Nome de Usuário</label>
-                <input type="text" id="username" name="username" value="<%= locals.user ? user.username : '' %>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" value="<%= locals.user ? user.email : '' %>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Nova Senha (deixe em branco se não quiser mudar)</label>
-                <input type="password" id="password" name="password">
+                <input type="text" id="username" name="username" value="<%= usuario.username ? usuario.username : '' %>" required>
             </div>
 
-            <button type="submit" class="btn-save-profile">Salvar Alterações</button>
+            <div class="form-group">
+                <label for="email">Endereço de E-mail</label>
+                <input type="email" id="email" name="email" value="<%= usuario.email ? usuario.email : '' %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Nova Senha</label>
+                <input type="password" id="password" name="senha_nova" placeholder="••••••••">
+                <span class="form-hint">Deixe em branco caso não queira alterar sua senha atual.</span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Salvar Alterações</button>
+            </div>
+
         </form>
-
-        <div class="delete-account-confirmation" id="deleteAccountConfirmation">
-            <h2>🗑️ Confirmar Exclusão de Conta</h2>
-            <p>ATENÇÃO: Esta ação é irreversível e todos os seus dados serão apagados definitivamente. Para continuar, insira sua senha atual e digite a palavra "CONFIRMAR" em maiúsculo.</p>
-            
-            <form action="/account/delete" method="POST">
-                
-                <div class="form-group">
-                    <label for="current_password_confirm">Sua Senha Atual</label>
-                    <input type="password" id="current_password_confirm" name="current_password" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirm_word">Digite "CONFIRMAR" (em maiúsculo)</label>
-                    <input type="text" id="confirm_word" name="confirm_word" required pattern="CONFIRMAR">
-                </div>
-
-                <div class="delete-actions">
-                    <button type="submit" class="btn-final-delete">Excluir Minha Conta Permanentemente</button>
-                    <button type="button" class="btn-cancel-delete" id="cancelDeleteBtn">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </main>
+    </div>
 
 </div>
 
 <script>
-    // JavaScript para controlar o Dropdown e a Confirmação de Deleção
-    document.addEventListener('DOMContentLoaded', function() {
-        const avatarBtn = document.getElementById('profileAvatarBtn');
-        const dropdownMenu = document.getElementById('profileDropdownMenu');
-        const deleteMenuBtn = document.getElementById('deleteAccountMenuBtn');
-        const deleteConfirmation = document.getElementById('deleteAccountConfirmation');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    // Lógica simples para mostrar/esconder o formulário
+    document.getElementById('btnAbrirExclusao').addEventListener('click', function() {
+        document.getElementById('areaBotaoExcluir').style.display = 'none';
+        document.getElementById('areaFormExclusao').style.display = 'block';
+    });
 
-        // Lógica do Dropdown do Avatar
-        avatarBtn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Impede que o clique feche o menu imediatamente
-            dropdownMenu.classList.toggle('open');
-        });
-
-        // Fecha o dropdown se o usuário clicar fora dele
-        document.addEventListener('click', function() {
-            if (dropdownMenu.classList.contains('open')) {
-                dropdownMenu.classList.remove('open');
-            }
-        });
-
-        // Lógica para abrir a confirmação de deleção
-        deleteMenuBtn.addEventListener('click', function() {
-            dropdownMenu.classList.remove('open'); // Fecha o dropdown
-            deleteConfirmation.classList.add('visible'); // Mostra a confirmação com animação
-            deleteConfirmation.scrollIntoView({ behavior: 'smooth' }); // Rola a tela para a confirmação
-        });
-
-        // Lógica para cancelar a deleção
-        cancelDeleteBtn.addEventListener('click', function() {
-            deleteConfirmation.classList.remove('visible'); // Esconde a confirmação
-        });
+    document.getElementById('btnCancelarExclusao').addEventListener('click', function() {
+        document.getElementById('areaFormExclusao').style.display = 'none';
+        document.getElementById('areaBotaoExcluir').style.display = 'flex';
     });
 </script>

@@ -1,0 +1,152 @@
+/* public/css/profile.css */
+
+/* Container Principal centralizado */
+.profile-dashboard {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Container do botão de Excluir (Alinhado à direita) */
+.profile-top-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.btn-delete-top {
+    background-color: #dc3545; /* Vermelho perigo */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-delete-top:hover {
+    background-color: #c82333;
+}
+
+/* Retângulo Roxo Arredondado (Banner) */
+.profile-banner {
+    background-color: #8a2be2; /* Roxo padrão do seu header */
+    color: white;
+    padding: 30px;
+    border-radius: 12px; /* Arredondamento */
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.profile-banner h1 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+}
+
+.profile-banner p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Área do Formulário (Branca com sombra) */
+.profile-content {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #eaeaea;
+}
+
+.profile-content h2 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+/* Grid para alinhar Nome e Sobrenome lado a lado */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Estilos gerais dos inputs */
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #fcfcfc;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #8a2be2; /* Roxo no foco */
+    background-color: #fff;
+}
+
+.form-hint {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* Botão de Salvar */
+.form-actions {
+    margin-top: 30px;
+}
+
+.btn-save {
+    background-color: #8a2be2;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%; /* Botão ocupa a largura toda no final */
+    transition: opacity 0.2s;
+}
+
+.btn-save:hover {
+    opacity: 0.9;
+}
+
+.delete-section {
+    background-color: #fffafa;
+    border: 2px dashed #dc3545;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.btn-cancel {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-cancel:hover { background-color: #5a6268; }

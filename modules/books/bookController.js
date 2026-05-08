@@ -252,8 +252,9 @@ exports.updateBook = async(req, res) => {
     }
 };
 
-exports.coletorLixoImagens = async (req, res) => {
+exports.faxinaDisco = async () => {
     try{
+
         const pastaUploads = path.join(__dirname, '..', '..', 'public', 'uploads', 'books');
 
         const arquivosFisicos = await fs.readdir(pastaUploads);
@@ -284,6 +285,19 @@ exports.coletorLixoImagens = async (req, res) => {
                 console.log(`[Coletor de lixo] Arquivo removido: ${arquivo}`);
             }
         }
+
+        return apagados;
+
+    }catch(erro){
+        console.error('Erro ao limpar arquivos: ', erro);
+        return 0;
+    }
+}
+
+exports.coletorLixoImagens = async (req, res) => {
+    try{
+
+        const apagados = await this.faxinaDisco();
 
         req.flash('success', `Limpeza concluída! ${apagados} imagens órfãs foram removidas.`);
         return res.redirect('/admin');
