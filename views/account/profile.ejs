@@ -1,65 +1,57 @@
-<!-- views/account/profile.ejs -->
-<!-- Presumo que seu base.ejs já carrega o CSS, mas certifique-se de ter o <link rel="stylesheet" href="/css/profile.css"> no seu base.ejs ou aqui no topo -->
-
 <div class="profile-dashboard">
-    
-    <!-- Ações do Topo (Botão Excluir isolado à direita) -->
-    <!-- Ações do Topo -->
+
+    <!-- Top action: delete account toggle -->
     <div class="profile-top-actions" id="areaBotaoExcluir">
         <button type="button" class="btn-delete-top" id="btnAbrirExclusao">Excluir Conta</button>
     </div>
 
-    <!-- Formulário de Exclusão (Escondido por padrão) -->
+    <!-- Delete confirmation form (hidden by default) -->
     <div class="delete-section" id="areaFormExclusao" style="display: none;">
-        <h3 style="color: #dc3545; margin-top: 0;">⚠️ Confirmação de Exclusão</h3>
-        <p style="font-size: 14px; color: #555;">Para excluir sua conta e apagar todos os seus livros, digite sua senha atual e a palavra <strong>EXCLUIR</strong>.</p>
-        
-        <!-- O action continua o mesmo, enviando o ID pela URL como você fez -->
+        <h3>⚠️ Confirmação de Exclusão</h3>
+        <p>Para excluir sua conta e apagar todos os seus livros, digite sua senha atual e a palavra <strong>EXCLUIR</strong>.</p>
+
         <form action="/account/delete/<%= usuario.id %>" method="POST" class="delete-form-grid">
-            
             <div class="form-group">
                 <label for="delete_password">Sua Senha</label>
                 <input type="password" id="delete_password" name="senha" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="confirm_word">Digite EXCLUIR</label>
-                <!-- O HTML5 já ajuda bloqueando se não for a palavra exata -->
                 <input type="text" id="confirm_word" name="confirmacao" required pattern="EXCLUIR" title="Você deve digitar EXCLUIR em letras maiúsculas.">
             </div>
 
-            <div style="display: flex; gap: 15px; margin-top: 15px;">
+            <div style="display: flex; gap: 12px; margin-top: 8px; flex-wrap:wrap;">
                 <button type="submit" class="btn-delete-top">Confirmar Exclusão</button>
                 <button type="button" class="btn-cancel" id="btnCancelarExclusao">Cancelar</button>
             </div>
         </form>
     </div>
 
-    <!-- Retângulo Roxo Arredondado (Banner) -->
+    <!-- Banner -->
     <div class="profile-banner">
         <h1>Configurações da Conta</h1>
         <p>Gerencie seus dados pessoais e preferências do EduStream.</p>
     </div>
 
-    <!-- Área do Formulário -->
+    <!-- Profile form -->
     <div class="profile-content">
         <h2>Informações do Perfil</h2>
-        
+
         <form action="/account/edit" method="POST" class="profile-form">
-            
-            <!-- Linha com duas colunas para Nome e Sobrenome -->
+
             <div class="form-row">
                 <div class="form-group">
                     <label for="first_name">Nome</label>
                     <input type="text" id="first_name" name="first_name" value="<%= usuario.first_name ? usuario.first_name : '' %>" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="last_name">Sobrenome</label>
                     <input type="text" id="last_name" name="last_name" value="<%= usuario.last_name ? usuario.last_name : '' %>" required>
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label for="username">Nome de Usuário</label>
                 <input type="text" id="username" name="username" value="<%= usuario.username ? usuario.username : '' %>" required>
@@ -79,14 +71,11 @@
             <div class="form-actions">
                 <button type="submit" class="btn-save">Salvar Alterações</button>
             </div>
-
         </form>
     </div>
-
 </div>
 
 <script>
-    // Lógica simples para mostrar/esconder o formulário
     document.getElementById('btnAbrirExclusao').addEventListener('click', function() {
         document.getElementById('areaBotaoExcluir').style.display = 'none';
         document.getElementById('areaFormExclusao').style.display = 'block';

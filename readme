@@ -4,3 +4,4 @@ Esse é o primeiro projeto que estou fazendo e também o primeiro dos propostos 
 A princípio eu não estava muito empolgado por já estar vendo sever-side por conta própria através do livro de django que estou lendo, mas depois de 
 seguir as instruções dele para o shortz-app, me animei um pouco em fazer isso. A princípio acredito que uma plataforma de e-larning não será muito fácil de fazer.
 Vou usar o postgre para banco de dados porque já venho usando ele com django, então não vou instalar xamp nem MariaDB.
+

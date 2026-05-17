@@ -1,0 +1,177 @@
+<div class="dashboard">
+  <h2 class="texto-formatado">Biblioteca da Comunidade</h2>
+  <p style="font-size: 1.05rem; max-width: 640px; margin: 0 auto 2rem; text-align:center; color: var(--text-muted);">
+    Explore todos os livros publicados pelos usuários do <%= title %>.
+  </p>
+
+  <% if (!livros || livros.length === 0) { %>
+    <p style="text-align:center;">Nenhum livro foi publicado ainda.</p>
+  <% } else { %>
+
+    <div class="livros-grid">
+      <% livros.forEach(livro => { %>
+        <div class="livro-card">
+          <img src="<%= livro.imagem %>" alt="Capa do livro <%= livro.titulo %>">
+          <h3><%= livro.titulo %></h3>
+          <p>Páginas: <%= livro.paginas %></p>
+
+          <p>
+            <a href="/profiles/usuario/<%= livro.User.id %>" class="autor-livro">
+              Publicado por <span class="link-autor"><%= livro.User.username %></span>
+            </a>
+          </p>
+
+          <button
+            type="button"
+            class="btn-favoritar <%= livro.favoritado ? 'favoritado' : '' %>"
+            data-book-id="<%= livro.id %>"
+            data-favoritado="<%= livro.favoritado ? '1' : '0' %>"
+            aria-label="Favoritar/Desfavoritar livro"
+            aria-pressed="<%= livro.favoritado ? 'true' : 'false' %>"
+            title="Favoritar/Desfavoritar"
+          >
+            <span class="heart-outline" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6z"/>
+              </svg>
+            </span>
+            <span class="heart-filled" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                <path d="M12 21s-7.5-4.6-9.7-9.2C.6 8 2.6 4 6.4 4c2 0 3.6 1 4.6 2.6h2C14 5 15.6 4 17.6 4 21.4 4 23.4 8 21.7 11.8 19.5 16.4 12 21 12 21z"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      <% }) %>
+    </div>
+
+  <% } %>
+</div>
+
+<script>
+  (function () {
+    document.querySelectorAll('.btn-favoritar').forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        if (btn.dataset.loading === '1') return;
+        btn.dataset.loading = '1';
+
+        const bookId = btn.dataset.bookId;
+        const eraFavorito = btn.dataset.favoritado === '1';
+
+        // Atualização otimista
+        toggleEstado(btn, !eraFavorito);
+
+        try {
+          const resp = await fetch('/profiles/favoritar/' + bookId, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+          });
+
+          if (!resp.ok) throw new Error('Falha na requisição');
+
+          const data = await resp.json().catch(function () { return null; });
+          if (data && typeof data.favoritado === 'boolean') {
+            toggleEstado(btn, data.favoritado);
+          }
+        } catch (err) {
+          // Reverte em caso de erro
+          toggleEstado(btn, eraFavorito);
+          console.error('Erro ao favoritar:', err);
+        } finally {
+          btn.dataset.loading = '0';
+        }
+      });
+    });
+
+    function toggleEstado(btn, favoritado) {
+      btn.classList.toggle('favoritado', favoritado);
+      btn.dataset.favoritado = favoritado ? '1' : '0';
+      btn.setAttribute('aria-pressed', favoritado ? 'true' : 'false');
+    }
+  })();
+</script>
+
+<style>
+  /* Estilos específicos desta página — mantêm o mesmo idioma visual do site */
+  .autor-livro {
+    margin-top: .35rem;
+    color: var(--text-muted);
+    font-size: .92rem;
+    text-decoration: none;
+  }
+
+  .link-autor {
+    color: var(--purple-light);
+    text-decoration: none;
+    font-weight: 600;
+    background: linear-gradient(120deg, var(--purple-light), var(--purple-glow));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: filter .25s ease, transform .25s ease;
+  }
+
+  .link-autor:hover {
+    filter: drop-shadow(0 0 6px rgba(216, 180, 254, .55));
+    transform: translateY(-1px);
+  }
+
+  .btn-favoritar {
+    --size: 42px;
+    width: var(--size);
+    height: var(--size);
+    margin-top: .85rem;
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--purple-glow);
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .25s ease,
+                background .25s ease, color .25s ease, border-color .25s ease;
+    backdrop-filter: blur(6px);
+    position: relative;
+  }
+
+  .btn-favoritar:hover {
+    transform: translateY(-2px) scale(1.06);
+    box-shadow: 0 8px 22px -8px rgba(216, 180, 254, .55);
+    border-color: var(--purple-glow);
+  }
+
+  .btn-favoritar:active { transform: scale(.94); }
+
+  /* Alterna ícone via CSS (sem re-renderizar do servidor) */
+  .btn-favoritar .heart-filled { display: none; }
+  .btn-favoritar.favoritado .heart-outline { display: none; }
+  .btn-favoritar.favoritado .heart-filled { display: inline-flex; }
+
+  .btn-favoritar.favoritado {
+    background: var(--grad-primary);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 0 0 0 rgba(216, 180, 254, .55);
+    animation: heartPulse 1.6s ease-in-out infinite;
+  }
+
+  .btn-favoritar.favoritado svg { animation: heartPop .35s ease; }
+
+  @keyframes heartPop {
+    0%   { transform: scale(.6); }
+    60%  { transform: scale(1.25); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes heartPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(216, 180, 254, .55); }
+    50%      { box-shadow: 0 0 0 10px rgba(216, 180, 254, 0); }
+  }
+</style>

@@ -2,6 +2,7 @@ const Users = require("./userModel");
 const bcrypt = require("bcryptjs");
 const { Op } = require('sequelize');
 const bookControl = require('../books/bookController');
+const Books = require('../books/bookModel');
 
 exports.createUser = async (req, res) => {
     try{
@@ -69,7 +70,7 @@ exports.createUser = async (req, res) => {
             adm: novoUsuario.adm,
         }
 
-        req.flash('success', `Bem vinda ${novoUsuario.first_name}`);
+        req.flash('success', `Bem vindo ${novoUsuario.first_name}`);
         console.log('Usuário criado com sucesso');
         return res.redirect('/');
 
@@ -267,6 +268,31 @@ exports.deleteAccount = async (req, res) => {
     }catch(erro){
         console.error(erro);
         req.flash('error', 'Falha ao deletar conta');
+        return res.redirect('/');
+    }
+}
+
+exports.getFavoritos = async (req, res) => {
+    try{
+
+        const userId = req.session.usuarioLogado.id;
+
+        const usuario = await Users.findByPk(userId, {
+            include: [{
+                model: Books,
+                as: 'livrosFavoritos',
+                through: {attributes: []},
+                include: [{model: Users, attributes: ['username']}]
+            }]
+        });
+
+        const livros = usuario.livrosFavoritos || [];
+
+        res.render('account/favoritos', {title: 'Meus Favoritos', livros: livros, usuarioLogado: req.session.usuarioLogado});
+
+    }catch(erro){
+        console.error(erro);
+        req.flash('error', 'Falha ao carregar favoritos');
         return res.redirect('/');
     }
 }

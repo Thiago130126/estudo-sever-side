@@ -1,152 +1,144 @@
-/* public/css/profile.css */
+/* ============================================================
+   EduStream — Profile (Purple Night)
+   ============================================================ */
 
-/* Container Principal centralizado */
 .profile-dashboard {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 20px;
-    font-family: Arial, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeUp .5s ease-out both;
 }
 
-/* Container do botão de Excluir (Alinhado à direita) */
+/* Top actions (delete account) */
 .profile-top-actions {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
 }
 
 .btn-delete-top {
-    background-color: #dc3545; /* Vermelho perigo */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
+    background: linear-gradient(135deg, #ff5577, #c41d4a);
+    color: #fff;
+    border: 0;
+    padding: 0.65rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    box-shadow: 0 8px 24px -10px rgba(255, 85, 119, 0.6);
+    transition: transform .2s ease, box-shadow .2s ease;
+    font-family: inherit;
 }
-
 .btn-delete-top:hover {
-    background-color: #c82333;
-}
-
-/* Retângulo Roxo Arredondado (Banner) */
-.profile-banner {
-    background-color: #8a2be2; /* Roxo padrão do seu header */
-    color: white;
-    padding: 30px;
-    border-radius: 12px; /* Arredondamento */
-    margin-bottom: 30px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.profile-banner h1 {
-    margin: 0 0 10px 0;
-    font-size: 24px;
-}
-
-.profile-banner p {
-    margin: 0;
-    opacity: 0.9;
-}
-
-/* Área do Formulário (Branca com sombra) */
-.profile-content {
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border: 1px solid #eaeaea;
-}
-
-.profile-content h2 {
-    margin-top: 0;
-    color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-}
-
-/* Grid para alinhar Nome e Sobrenome lado a lado */
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-/* Estilos gerais dos inputs */
-.form-group {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    font-weight: bold;
-    color: #555;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-.form-group input {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    background-color: #fcfcfc;
-    transition: border-color 0.3s;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: #8a2be2; /* Roxo no foco */
-    background-color: #fff;
-}
-
-.form-hint {
-    font-size: 12px;
-    color: #888;
-    margin-top: 5px;
-}
-
-/* Botão de Salvar */
-.form-actions {
-    margin-top: 30px;
-}
-
-.btn-save {
-    background-color: #8a2be2;
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%; /* Botão ocupa a largura toda no final */
-    transition: opacity 0.2s;
-}
-
-.btn-save:hover {
-    opacity: 0.9;
-}
-
-.delete-section {
-    background-color: #fffafa;
-    border: 2px dashed #dc3545;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 30px;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px -8px rgba(255, 85, 119, 0.8);
 }
 
 .btn-cancel {
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
+    background: rgba(168, 85, 247, 0.12);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    padding: 0.65rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 500;
     cursor: pointer;
+    transition: all .2s ease;
+    font-family: inherit;
+}
+.btn-cancel:hover { background: rgba(168, 85, 247, 0.25); }
+
+/* Delete confirmation card */
+.delete-section {
+    background: var(--surface-strong);
+    border: 1px solid rgba(255, 85, 119, 0.4);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 20px 60px -20px rgba(255, 85, 119, 0.4);
+    animation: fadeUp .35s ease-out both;
+}
+.delete-section h3 {
+    color: var(--danger) !important;
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+}
+.delete-section p { color: var(--text-muted) !important; font-size: 0.92rem !important; }
+.delete-form-grid { margin-top: 1rem; }
+
+/* Banner */
+.profile-banner {
+    position: relative;
+    padding: 2.5rem 2rem;
+    border-radius: var(--radius-lg);
+    background: var(--grad-primary);
+    background-size: 200% 200%;
+    color: #fff;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-lg);
+    animation: shimmer 10s ease-in-out infinite;
+}
+.profile-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(400px 200px at 90% 0%, rgba(255,255,255,0.25), transparent 60%),
+        radial-gradient(300px 180px at 0% 100%, rgba(0,0,0,0.25), transparent 60%);
+    pointer-events: none;
+}
+.profile-banner h1 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin-bottom: 0.4rem;
+    color: #fff;
+    position: relative;
+}
+.profile-banner p {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.98rem;
+    position: relative;
 }
 
-.btn-cancel:hover { background-color: #5a6268; }
+/* Form card */
+.profile-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-md);
+}
+.profile-content h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1.4rem;
+    color: var(--text);
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+}
+
+.form-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+.form-actions .btn-save { width: auto; min-width: 200px; }
+
+@media (max-width: 640px) {
+    .profile-banner { padding: 1.75rem 1.25rem; }
+    .profile-content { padding: 1.5rem; }
+    .profile-form .form-row { grid-template-columns: 1fr; }
+    .form-actions .btn-save { width: 100%; }
+}

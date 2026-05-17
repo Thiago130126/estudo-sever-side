@@ -17,6 +17,20 @@ const Books = require('./modules/books/bookModel');
 Users.hasMany(Books, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 Books.belongsTo(Users, { foreignKey: 'user_id' });
 
+Users.belongsToMany(Books, {
+  through: 'favoritos',
+  as: 'livrosFavoritos',
+  foreignKey: 'user_id',
+  otherKey: 'book_id'
+});
+
+Books.belongsToMany(Users, {
+  through: 'favoritos',
+  as: 'usuariosQueFavoritaram',
+  foreignKey: 'book_id',
+  otherKey: 'user_id'
+});
+
 var indexRouter = require('./routes/index');
 
 // Rotas
@@ -24,6 +38,7 @@ var indexRouter = require('./routes/index');
 var accountRouter = require('./routes/account');
 var admRouter = require('./routes/adm');
 var bookRouter = require('./routes/books');
+var profileRouter = require('./routes/profiles');
 
 var app = express();
 
@@ -66,6 +81,7 @@ app.use('/', indexRouter);
 app.use('/account', accountRouter);
 app.use('/admin', admRouter);
 app.use('/books', bookRouter);
+app.use('/profiles', profileRouter);
 
 
 

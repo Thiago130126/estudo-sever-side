@@ -1,3 +1,6 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<div class="auth-card" style="max-width: 600px; text-align:center;">
+    <h2>⚠️ <%= message %></h2>
+    <p style="margin: 1rem 0; font-size: 1rem;">Status: <strong><%= error.status %></strong></p>
+    <pre style="text-align:left; background: rgba(7,3,15,.6); padding: 1rem; border-radius: 10px; overflow:auto; font-size:.8rem; color: var(--text-muted); border:1px solid var(--border);"><%= error.stack %></pre>
+    <a href="/" class="link-header btn-outline" style="display:inline-flex; margin-top:1rem;">← Voltar ao início</a>
+</div>

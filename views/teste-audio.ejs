@@ -1,0 +1,168 @@
+
+<section class="creditos-page">
+  <div class="creditos-card">
+    <h2 class="creditos-titulo">Créditos do Projeto</h2>
+
+    <!-- Estado inicial: botão para liberar o áudio (Chrome exige interação do usuário) -->
+    <div id="creditos-intro" class="creditos-intro">
+      <p class="creditos-subtitulo">
+        Uma trilha sonora acompanha esta página.
+        Clique no botão abaixo para começar.
+      </p>
+      <button type="button" id="btn-ver-creditos" class="btn-primary btn-creditos">
+        <span class="btn-creditos-icon" aria-hidden="true">♪</span>
+        Ver Créditos
+      </button>
+    </div>
+
+    <!-- Conteúdo dos créditos: escondido até o clique -->
+    <div id="creditos-conteudo" class="creditos-conteudo" hidden>
+      <div class="creditos-now-playing" aria-hidden="true">
+        <span class="np-bar"></span>
+        <span class="np-bar"></span>
+        <span class="np-bar"></span>
+        <span class="np-bar"></span>
+        <span class="np-label">Tocando agora</span>
+      </div>
+
+      <article class="creditos-texto">
+        <!-- 
+          Espaço reservado para o texto dos créditos.
+          Escreva aqui sobre o projeto, equipe, agradecimentos, etc.
+        -->
+        <p>
+            Esse é o fim do projeto EduStream como uma biblioteca virtual. Foi muito legal e interessante faze-lo. 
+            Esta página põe fim ao último dos tópicos abordados pelo professor Paulo Manseira no shortz-app, o projeto de referência para a prova N2,
+            que é o streaming com http range requests. No momento que eu escrevo esse texto, dia 15/05 eu percebi que para a N3, serão cobrados novos assuntos,
+            então vou ter que voltar aqui para aplica-los. Até o momento eu implementei, CRUDs completos, enviei parâmetros pela url, envio de formulários,
+            FrontEnd dinâmico, com herânça de templates, criptografia de senhas com bcrypt, relação N:N, rotas post e get, middlewares, multer para manipular arquivos físicos,
+            perfil de usuário público, site  de administrador, limpeza de disco com fs, sequelize e models, sessão, render e contexto para os templates, AJAX para interações
+            dinâmicas e por fim até então streaming de mídia. Demorei muito para fazer isso por achar que seria difícil ou chato não ter várias coisas prontas para mim como
+            é em Django, mas foi bem legal até. Agora posso, fazer meu trabalho de testes de software que por coincidência é o EduStream, o de verdade, a plataforma de 
+            e-learning. Até a N3 então.
+        </p>
+      </article>
+    </div>
+  </div>
+
+  <!-- Áudio sem controles visíveis, em loop -->
+  <audio id="creditos-audio" src="/streaming" loop preload="none"></audio>
+</section>
+
+<style>
+  .creditos-page {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 0 1.25rem;
+    animation: fadeUp .55s ease-out both;
+  }
+  .creditos-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-lg);
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .creditos-titulo {
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 2rem;
+    margin-bottom: 1.25rem;
+  }
+  .creditos-subtitulo {
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+  }
+  .btn-creditos {
+    width: auto !important;
+    min-width: 220px;
+    margin: 0 auto !important;
+    gap: .6rem;
+  }
+  .btn-creditos-icon {
+    display: inline-block;
+    animation: heartPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes heartPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.25); }
+  }
+
+  .creditos-conteudo {
+    animation: fadeUp .5s ease-out both;
+    text-align: left;
+  }
+  .creditos-texto {
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 1.02rem;
+  }
+  .creditos-texto p + p { margin-top: 1rem; }
+
+  /* Indicador "tocando agora" animado */
+  .creditos-now-playing {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 4px;
+    padding: .5rem .9rem;
+    margin: 0 auto 1.5rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: rgba(168, 85, 247, 0.08);
+  }
+  .np-label {
+    margin-left: .55rem;
+    color: var(--text-muted);
+    font-size: .82rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .np-bar {
+    width: 3px;
+    height: 14px;
+    background: var(--grad-primary);
+    border-radius: 2px;
+    animation: npBounce 1s ease-in-out infinite;
+  }
+  .np-bar:nth-child(2) { animation-delay: .15s; }
+  .np-bar:nth-child(3) { animation-delay: .3s; }
+  .np-bar:nth-child(4) { animation-delay: .45s; }
+  @keyframes npBounce {
+    0%, 100% { transform: scaleY(.4); }
+    50%      { transform: scaleY(1.4); }
+  }
+
+  @media (max-width: 600px) {
+    .creditos-card { padding: 1.75rem 1.25rem; }
+    .creditos-titulo { font-size: 1.5rem; }
+  }
+</style>
+
+<script>
+    (function () {
+        var btn      = document.getElementById('btn-ver-creditos');
+        var intro    = document.getElementById('creditos-intro');
+        var conteudo = document.getElementById('creditos-conteudo');
+        var audio    = document.getElementById('creditos-audio');
+
+        btn.addEventListener('click', function () {
+        // Toca a música (precisa ser dentro de um gesto do usuário)
+        var p = audio.play();
+        if (p && typeof p.catch === 'function') {
+            p.catch(function (err) {
+            console.warn('Não foi possível iniciar o áudio:', err);
+            });
+        }
+        // Troca a tela: esconde o botão, mostra os créditos
+        intro.hidden = true;
+        conteudo.hidden = false;
+        });
+    })();
+
+    document.getElementById('creditos-audio').volume = 0.2;
+</script>
+

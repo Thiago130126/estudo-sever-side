@@ -27,6 +27,8 @@ router.post('/edit', authMidd.userAuth, userController.updateProfile);
 
 router.post('/delete/:id', authMidd.userAuth, userController.deleteAccount);
 
+router.get('/favoritos', authMidd.userAuth, userController.getFavoritos);
+
 module.exports = router;
 
 

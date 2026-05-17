@@ -8,6 +8,7 @@
             <span class="eyebrow">Painel Administrativo</span>
             <h2>Bem-vindo, <span class="gradient-text"><%= typeof user !== 'undefined' ? user.username : 'Admin' %></span></h2>
             <p>Visão global e manutenção do sistema <strong>EduStream</strong>.</p>
+            <p><strong><%= dados.usuario.email %></strong></p>
         </div>
 
         <div class="admin-actions">
@@ -28,22 +29,22 @@
     <section class="admin-stats">
         <div class="stat-card">
             <span class="stat-label">Usuários</span>
-            <span class="stat-value"><%= typeof stats !== 'undefined' ? stats.totalUsers : 0 %></span>
+            <span class="stat-value"><%= typeof dados.total_usuarios !== 'undefined' ? dados.total_usuarios : 0 %></span>
             <span class="stat-trend">total cadastrados</span>
         </div>
         <div class="stat-card">
             <span class="stat-label">Administradores</span>
-            <span class="stat-value"><%= typeof stats !== 'undefined' ? stats.totalAdmins : 0 %></span>
+            <span class="stat-value"><%= typeof dados.total_adms !== 'undefined' ? dados.total_adms : 0 %></span>
             <span class="stat-trend">acesso elevado</span>
         </div>
         <div class="stat-card">
             <span class="stat-label">Banidos</span>
-            <span class="stat-value"><%= typeof stats !== 'undefined' ? stats.totalBanned : 0 %></span>
+            <span class="stat-value"><%= typeof dados.total_banidos !== 'undefined' ? dados.total_banidos : 0 %></span>
             <span class="stat-trend">contas inativas</span>
         </div>
         <div class="stat-card">
             <span class="stat-label">Livros</span>
-            <span class="stat-value"><%= typeof stats !== 'undefined' ? stats.totalBooks : 0 %></span>
+            <span class="stat-value"><%= typeof dados.total_livros !== 'undefined' ? dados.total_livros : 0 %></span>
             <span class="stat-trend">no acervo</span>
         </div>
     </section>
@@ -57,18 +58,17 @@
                     <option value="all"   <%= (typeof query!=='undefined'&&query.filter==='all')?'selected':'' %>>Todos os Usuários</option>
                     <option value="adm"   <%= (typeof query!=='undefined'&&query.filter==='adm')?'selected':'' %>>Apenas Administradores</option>
                     <option value="banned"<%= (typeof query!=='undefined'&&query.filter==='banned')?'selected':'' %>>Apenas Banidos</option>
-                    <option value="date"  <%= (typeof query!=='undefined'&&query.filter==='date')?'selected':'' %>>Mais Antigos</option>
-                    <option value="books" <%= (typeof query!=='undefined'&&query.filter==='books')?'selected':'' %>>Mais Livros Postados</option>
                 </select>
             </div>
 
             <div class="filter-group">
                 <label for="sort">Ordenar</label>
                 <select name="sort" id="sort">
-                    <option value="desc" <%= (typeof query!=='undefined'&&query.sort==='desc')?'selected':'' %>>Decrescente</option>
-                    <option value="asc"  <%= (typeof query!=='undefined'&&query.sort==='asc')?'selected':'' %>>Crescente</option>
+                    <option value="desc" <%= (typeof query!=='undefined'&&query.sort==='desc')?'selected':'' %>>Mais novos</option>
+                    <option value="asc"  <%= (typeof query!=='undefined'&&query.sort==='asc')?'selected':'' %>>Mais Antigos</option>
                     <option value="az"   <%= (typeof query!=='undefined'&&query.sort==='az')?'selected':'' %>>Alfabética A-Z</option>
                     <option value="za"   <%= (typeof query!=='undefined'&&query.sort==='za')?'selected':'' %>>Alfabética Z-A</option>
+                    <option value="books" <%= (typeof query!=='undefined'&&query.sort==='books')?'selected':'' %>>Mais Livros Postados</option>
                 </select>
             </div>
 
@@ -108,9 +108,9 @@
                                 </div>
                             </td>
                             <td class="muted"><%= u.email %></td>
-                            <td><strong><%= u.booksCount || 0 %></strong></td>
+                            <td><strong><%= u.dataValues.booksCount || 0 %></strong></td>
                             <td>
-                                <% if (u.isAdmin) { %>
+                                <% if (u.adm) { %>
                                     <span class="badge badge-adm">Administrador</span>
                                 <% } else { %>
                                     <span class="badge badge-user">Usuário</span>
@@ -125,7 +125,7 @@
                             </td>
                             <td class="muted"><%= u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '—' %></td>
                             <td>
-                                <a href="/admin/usuario/<%= u._id %>" class="link-edit">Editar</a>
+                                <a href="/admin/usuario/<%= u.id %>" class="link-edit">Editar</a>
                             </td>
                         </tr>
                     <% }) %>

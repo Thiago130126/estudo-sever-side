@@ -356,3 +356,173 @@ body {
     .btn-admin-action { flex: 1; justify-content: center; }
     .admin-table th, .admin-table td { padding: 12px 10px; font-size: .85rem; }
 }
+
+/* ---------- Formulário de edição (segue o estilo do admin.css) ---------- */
+.admin-form-container {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--shadow-glow);
+    animation: fadeUp .6s ease both;
+}
+.admin-form { display: flex; flex-direction: column; gap: 28px; }
+
+.form-section {
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 22px;
+    background: rgba(15, 7, 32, 0.45);
+    position: relative;
+    overflow: hidden;
+}
+.form-section::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--purple-main), var(--purple-glow));
+}
+.form-section-title {
+    margin: 0 0 18px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--purple-glow);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+.optional-tag {
+    font-size: .68rem;
+    margin-left: 8px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(168, 85, 247, .12);
+    color: var(--purple-light);
+    border: 1px solid var(--card-border);
+    letter-spacing: .08em;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+.form-group { display: flex; flex-direction: column; }
+.form-group label {
+    font-size: .78rem;
+    color: var(--ink-muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+.form-group input {
+    padding: 11px 14px;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    background: rgba(10, 6, 18, 0.6);
+    color: var(--ink);
+    font-size: .95rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, transform .2s;
+    font-family: inherit;
+}
+.form-group input:focus {
+    border-color: var(--purple-mid);
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, .15);
+}
+.form-group input:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+}
+
+/* ---------- Toggles ---------- */
+.toggle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+.toggle-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    background: rgba(10, 6, 18, 0.5);
+    cursor: pointer;
+    transition: border-color .25s ease, transform .25s ease, background .25s ease;
+    position: relative;
+}
+.toggle-card:hover {
+    border-color: var(--purple-mid);
+    transform: translateY(-2px);
+    background: rgba(124, 58, 237, 0.08);
+}
+.toggle-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.toggle-title { font-weight: 700; color: var(--ink); font-size: .98rem; }
+.toggle-desc { font-size: .82rem; color: var(--ink-muted); line-height: 1.4; }
+
+.toggle-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.toggle-switch {
+    position: relative;
+    width: 52px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(168, 85, 247, .15);
+    border: 1px solid var(--card-border);
+    transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
+    flex-shrink: 0;
+}
+.toggle-switch::after {
+    content: "";
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ink-muted), #6b6580);
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1), background .3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.toggle-input:checked ~ .toggle-switch {
+    background: linear-gradient(135deg, var(--purple-main), var(--purple-mid));
+    border-color: var(--purple-glow);
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, .15);
+}
+.toggle-input:checked ~ .toggle-switch::after {
+    transform: translateX(24px);
+    background: linear-gradient(135deg, #ffffff, var(--purple-glow));
+}
+.toggle-input:focus-visible ~ .toggle-switch {
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, .35);
+}
+
+/* ---------- Ações do form ---------- */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px solid var(--card-border);
+    margin-top: 4px;
+    padding-top: 22px;
+}
+.btn-ghost {
+    background: rgba(168, 85, 247, .08);
+    color: var(--purple-glow);
+    border: 1px solid var(--card-border);
+}
+.btn-ghost:hover { background: rgba(168, 85, 247, .15); }
+
+@media (max-width: 720px) {
+    .admin-form-container { padding: 18px; }
+    .form-section { padding: 16px; }
+    .form-actions { justify-content: stretch; }
+    .form-actions .btn-admin-action { flex: 1; justify-content: center; }
+}

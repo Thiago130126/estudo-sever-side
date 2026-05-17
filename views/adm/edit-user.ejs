@@ -1,0 +1,164 @@
+<link rel="stylesheet" href="/stylesheets/admin.css">
+
+<div class="admin-dashboard">
+
+    <!-- HEADER -->
+    <header class="admin-header">
+        <div class="admin-title">
+            <span class="eyebrow">Edição de Usuário</span>
+            <h2>Editando <span class="gradient-text"><%= usuario.username %></span></h2>
+            <p>Atualize as informações, permissões e o status da conta.</p>
+            <p><strong><%= usuario.email %></strong></p>
+        </div>
+
+        <div class="admin-actions">
+            <a href="/admin" class="btn-admin-action btn-info">
+                <span class="btn-icon">←</span>
+                <span>Voltar ao Painel</span>
+            </a>
+            <form action="/admin/usuario/<%= usuario.id %>/excluir" method="POST" class="inline-form"
+                  onsubmit="return confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.');">
+                <button type="submit" class="btn-admin-action btn-warning">
+                    <span class="btn-icon">🗑️</span>
+                    <span>Excluir Usuário</span>
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <!-- STATS RÁPIDOS -->
+    <section class="admin-stats">
+        <div class="stat-card">
+            <span class="stat-label">ID</span>
+            <span class="stat-value">#<%= usuario.id %></span>
+            <span class="stat-trend">identificador único</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Livros</span>
+            <span class="stat-value"><%= typeof usuario.dataValues !== 'undefined' && usuario.dataValues.booksCount ? usuario.dataValues.booksCount : 0 %></span>
+            <span class="stat-trend">postados pelo usuário</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Nível</span>
+            <span class="stat-value" style="font-size:1.4rem;">
+                <% if (usuario.adm) { %>
+                    <span class="badge badge-adm">Administrador</span>
+                <% } else { %>
+                    <span class="badge badge-user">Usuário</span>
+                <% } %>
+            </span>
+            <span class="stat-trend">permissão atual</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Status</span>
+            <span class="stat-value" style="font-size:1.4rem;">
+                <% if (usuario.ativo) { %>
+                    <span class="badge badge-active">● Ativo</span>
+                <% } else { %>
+                    <span class="badge badge-banned">● Banido</span>
+                <% } %>
+            </span>
+            <span class="stat-trend">situação da conta</span>
+        </div>
+    </section>
+
+    <!-- FORMULÁRIO -->
+    <section class="admin-form-container">
+        <form action="/admin/usuario/<%= usuario.id %>" method="POST" class="admin-form">
+
+            <div class="form-section">
+                <h3 class="form-section-title">Dados pessoais</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="username">Nome de usuário</label>
+                        <input type="text" id="username" name="username"
+                               value="<%= usuario.username || '' %>" required maxlength="60">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email"
+                               value="<%= usuario.email || '' %>" required maxlength="255">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="createdAt">Cadastrado em</label>
+                        <input type="text" id="createdAt" disabled
+                               value="<%= usuario.createdAt ? new Date(usuario.createdAt).toLocaleString('pt-BR') : '—' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="updatedAt">Última atualização</label>
+                        <input type="text" id="updatedAt" disabled
+                               value="<%= usuario.updatedAt ? new Date(usuario.updatedAt).toLocaleString('pt-BR') : '—' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">Nome</label>
+                        <input type="text" id="username" name="first_name"
+                               value="<%= usuario.first_name || '' %>" required maxlength="60">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">Sobrenome</label>
+                        <input type="text" id="username" name="last_name"
+                               value="<%= usuario.last_name || '' %>" required maxlength="60">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">Permissões e status</h3>
+                <div class="toggle-grid">
+
+                    <label class="toggle-card" for="adm">
+                        <div class="toggle-info">
+                            <span class="toggle-title">Administrador</span>
+                            <span class="toggle-desc">Permite acesso ao painel administrativo e ações elevadas.</span>
+                        </div>
+                        <input type="checkbox" id="adm" name="adm" value="true"
+                               class="toggle-input" <%= usuario.adm ? 'checked' : '' %>>
+                        <span class="toggle-switch"></span>
+                    </label>
+
+                    <label class="toggle-card" for="ativo">
+                        <div class="toggle-info">
+                            <span class="toggle-title">Conta ativa</span>
+                            <span class="toggle-desc">Desative para banir o usuário e impedir o acesso ao site.</span>
+                        </div>
+                        <input type="checkbox" id="ativo" name="ativo" value="true"
+                               class="toggle-input" <%= usuario.ativo ? 'checked' : '' %>>
+                        <span class="toggle-switch"></span>
+                    </label>
+
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">Redefinir senha <span class="optional-tag">opcional</span></h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="senha">Nova senha</label>
+                        <input type="password" id="senha" name="senha"
+                               placeholder="Deixe em branco para manter a atual" minlength="6" maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="senha_confirm">Confirmar nova senha</label>
+                        <input type="password" id="senha_confirm" name="senha_confirm"
+                               placeholder="Repita a nova senha" minlength="6" maxlength="100">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="/admin" class="btn-admin-action btn-ghost">
+                    <span>Cancelar</span>
+                </a>
+                <button type="submit" class="btn-admin-action btn-info">
+                    <span>Salvar Alterações</span>
+                </button>
+            </div>
+        </form>
+    </section>
+
+</div>

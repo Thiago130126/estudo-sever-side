@@ -1,6 +1,7 @@
 const Books = require('./bookModel');
 const fs = require('fs').promises;
 const path = require('path');
+const fsSinc = require('fs');
 
 exports.addBook = async (req, res) =>{
 
@@ -308,3 +309,56 @@ exports.coletorLixoImagens = async (req, res) => {
         return res.redirect('/admin');
     }
 };
+
+exports.streaming = async (req, res) => {
+    try{
+
+        const caminhoArquivo = path.resolve(__dirname, '../../public/media/audio.mp3');
+
+        const informacoesDoArquivo = await fs.stat(caminhoArquivo);
+
+        const tamanhoTotal = informacoesDoArquivo.size;
+
+        const range = req.headers.range;
+
+        if(range){
+            const partes = range.replace(/bytes=/, "").split("-");
+            const inicio = parseInt(partes[0], 10);
+
+            const TAMANHO_DO_PEDACO = 10 ** 6;
+
+            const fim = partes[1] 
+                ? parseInt(partes[1], 10)
+                : Math.min(inicio + TAMANHO_DO_PEDACO, tamanhoTotal - 1);
+            
+            const tamanhoDoChunk = (fim - inicio) + 1;
+
+            const cabecalhos = {
+                'Content-Range': `bytes ${inicio}-${fim}/${tamanhoTotal}`,
+                'Accept-Ranges': 'bytes',
+                'Content-Length': tamanhoDoChunk,
+                'Content-Type': 'audio/mpeg',
+            };
+
+            res.writeHead(206, cabecalhos);
+
+            const fluxoDeLeitura = fsSinc.createReadStream(caminhoArquivo, { start: inicio, end: fim });
+            fluxoDeLeitura.pipe(res);
+        }else{
+            const cabecalhos = {
+            'Content-Length': tamanhoTotal,
+            'Content-Type': 'audio/mpeg',
+            };
+            res.writeHead(200, cabecalhos);
+            fsSinc.createReadStream(caminhoDoArquivo).pipe(res);
+        }
+
+    }catch(erro){
+        console.error(erro);
+        if(erro.code === 'ENOENT'){
+            return res.status(404).end();
+        }
+
+        return res.status(500).end();
+    }
+}
